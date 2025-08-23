@@ -57,20 +57,6 @@ export const lazyLoad = {
     })
   },
 
-  // Lazy load component
-  loadComponent: <T extends React.ComponentType<any>>(
-    importFunc: () => Promise<{ default: T }>,
-    fallback?: React.ComponentType
-  ) => {
-    const LazyComponent = React.lazy(importFunc)
-    
-    return (props: React.ComponentProps<T>) => (
-      <React.Suspense fallback={<div>Loading...</div>}>
-        <LazyComponent {...props} />
-      </React.Suspense>
-    )
-  },
-
   // Preload critical resources
   preloadResource: (href: string, as: string = 'fetch') => {
     const link = document.createElement('link')
