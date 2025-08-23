@@ -97,10 +97,11 @@ export const bundleOptimizer = {
 
   // Component-based code splitting
   componentSplit: {
-    modal: () => import('@/components/ui/modal'),
-    tooltip: () => import('@/components/ui/tooltip'),
-    dropdown: () => import('@/components/ui/dropdown'),
-    chart: () => import('@/components/ui/chart'),
+    // Placeholder for future UI components
+    // modal: () => import('@/components/ui/modal'),
+    // tooltip: () => import('@/components/ui/tooltip'),
+    // dropdown: () => import('@/components/ui/dropdown'),
+    // chart: () => import('@/components/ui/chart'),
   }
 }
 
