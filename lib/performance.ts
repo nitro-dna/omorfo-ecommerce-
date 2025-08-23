@@ -302,7 +302,11 @@ export const cache = CacheManager.getInstance()
 
 // Performance optimization hooks
 export const usePerformance = () => {
-  const [metrics, setMetrics] = useState({
+  const [metrics, setMetrics] = useState<{
+    memoryUsage: { used: number; total: number; limit: number } | null;
+    loadTime: number;
+    renderTime: number;
+  }>({
     memoryUsage: null,
     loadTime: 0,
     renderTime: 0
