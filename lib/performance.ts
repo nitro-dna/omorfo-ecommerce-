@@ -64,11 +64,14 @@ export const lazyLoad = {
   ) => {
     const LazyComponent = React.lazy(importFunc)
     
-    return (props: React.ComponentProps<T>) => (
-      <React.Suspense fallback={fallback ? <fallback /> : <div>Loading...</div>}>
-        <LazyComponent {...props} />
-      </React.Suspense>
-    )
+    return (props: React.ComponentProps<T>) => {
+      const FallbackComponent = fallback || (() => <div>Loading...</div>)
+      return (
+        <React.Suspense fallback={<FallbackComponent />}>
+          <LazyComponent {...props} />
+        </React.Suspense>
+      )
+    }
   },
 
   // Preload critical resources
