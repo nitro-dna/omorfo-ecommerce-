@@ -81,7 +81,7 @@ export function useRealtimeSubscription<T extends { id: string | number } = any>
               schema: options.schema || 'public',
               table: options.table,
               filter: options.filter
-            },
+            } as any,
             handleRealtimeUpdate
           )
           .subscribe((status) => {
