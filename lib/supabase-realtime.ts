@@ -20,7 +20,7 @@ export interface RealtimeOptions {
 }
 
 // Hook for real-time subscriptions
-export function useRealtimeSubscription<T = any>(
+export function useRealtimeSubscription<T extends { id: string | number } = any>(
   options: RealtimeOptions,
   callback?: (payload: RealtimeEvent) => void
 ) {
