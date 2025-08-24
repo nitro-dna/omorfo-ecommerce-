@@ -1,31 +1,26 @@
-import { useState, useEffect, useCallback } from 'react'
-import { useSession } from 'next-auth/react'
-import { supabase } from './supabase'
+import { useEffect, useState, useCallback } from 'react'
+import { supabase } from '@/lib/supabase'
 import { RealtimeChannel } from '@supabase/supabase-js'
+import { useSession } from 'next-auth/react'
 
-// Types for real-time functionality
-export interface RealtimeOptions {
-  table: string
-  event?: 'INSERT' | 'UPDATE' | 'DELETE' | '*'
-  schema?: string
-  filter?: string
-}
-
-export interface RealtimeEvent {
+// Real-time event types
+export type RealtimeEvent = {
   type: 'INSERT' | 'UPDATE' | 'DELETE'
+  table: string
   record: any
   old_record?: any
 }
 
-export interface RealtimeResult<T> {
-  data: T[]
-  isConnected: boolean
-  error: string | null
-  refetch: () => void
+// Real-time subscription options
+export interface RealtimeOptions {
+  table: string
+  event?: 'INSERT' | 'UPDATE' | 'DELETE' | '*'
+  filter?: string
+  schema?: string
 }
 
 // Hook for real-time subscriptions
-export function useRealtimeSubscription<T extends { id: string | number } = any>(
+export function useRealtimeSubscription<T extends { id: string } = any>(
   options: RealtimeOptions,
   callback?: (payload: RealtimeEvent) => void
 ) {
@@ -76,19 +71,17 @@ export function useRealtimeSubscription<T extends { id: string | number } = any>
         setData(initialData || [])
         setError(null)
 
-        // Temporarily disable real-time subscription to fix build
-        // TODO: Re-enable when Supabase types are fixed
-        /*
+        // Setup real-time subscription
         channel = supabase
           .channel(`${options.table}_changes`)
           .on(
-            'postgres_changes',
+            'postgres_changes' as any,
             {
               event: options.event || '*',
               schema: options.schema || 'public',
               table: options.table,
               filter: options.filter
-            } as any,
+            },
             handleRealtimeUpdate
           )
           .subscribe((status) => {
@@ -97,7 +90,6 @@ export function useRealtimeSubscription<T extends { id: string | number } = any>
               setError('Failed to connect to real-time updates')
             }
           })
-        */
 
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to setup real-time subscription')
@@ -146,9 +138,6 @@ export function useRealtimeCart() {
 
       if (!user) return
 
-      // Temporarily disable real-time subscription
-      // TODO: Re-enable when Supabase types are fixed
-      /*
       // Subscribe to cart changes for this user
       const channel = supabase
         .channel('cart_updates')
@@ -172,7 +161,6 @@ export function useRealtimeCart() {
       return () => {
         supabase.removeChannel(channel)
       }
-      */
     }
 
     getUserCart()
@@ -182,31 +170,15 @@ export function useRealtimeCart() {
 }
 
 // Real-time stock updates
-export function useRealtimeStock(productId: string) {
-  const [stockCount, setStockCount] = useState<number>(0)
+export function useRealtimeStock(productId?: string) {
+  const [stockUpdates, setStockUpdates] = useState<any[]>([])
   const [isConnected, setIsConnected] = useState(false)
 
   useEffect(() => {
-    // Get initial stock count
-    const getStockCount = async () => {
-      const { data: product } = await supabase
-        .from('products')
-        .select('stock_count')
-        .eq('id', productId)
-        .single()
+    if (!productId) return
 
-      if (product) {
-        setStockCount(product.stock_count || 0)
-      }
-    }
-
-    getStockCount()
-
-    // Temporarily disable real-time subscription
-    // TODO: Re-enable when Supabase types are fixed
-    /*
     const channel = supabase
-      .channel(`stock_${productId}`)
+      .channel('stock_updates')
       .on(
         'postgres_changes',
         {
@@ -217,9 +189,7 @@ export function useRealtimeStock(productId: string) {
         },
         (payload) => {
           console.log('Stock update:', payload)
-          if (payload.new?.stock_count !== undefined) {
-            setStockCount(payload.new.stock_count)
-          }
+          setStockUpdates(prev => [...prev, payload])
         }
       )
       .subscribe((status) => {
@@ -229,36 +199,21 @@ export function useRealtimeStock(productId: string) {
     return () => {
       supabase.removeChannel(channel)
     }
-    */
   }, [productId])
 
-  return { stockCount, isConnected }
+  return { stockUpdates, isConnected }
 }
 
 // Real-time reviews
-export function useRealtimeReviews(productId: string) {
-  const [reviews, setReviews] = useState<any[]>([])
+export function useRealtimeReviews(productId?: string) {
+  const [reviewUpdates, setReviewUpdates] = useState<any[]>([])
   const [isConnected, setIsConnected] = useState(false)
 
   useEffect(() => {
-    // Get initial reviews
-    const getReviews = async () => {
-      const { data: reviewsData } = await supabase
-        .from('reviews')
-        .select('*')
-        .eq('product_id', productId)
-        .order('created_at', { ascending: false })
+    if (!productId) return
 
-      setReviews(reviewsData || [])
-    }
-
-    getReviews()
-
-    // Temporarily disable real-time subscription
-    // TODO: Re-enable when Supabase types are fixed
-    /*
     const channel = supabase
-      .channel(`reviews_${productId}`)
+      .channel('review_updates')
       .on(
         'postgres_changes',
         {
@@ -269,11 +224,7 @@ export function useRealtimeReviews(productId: string) {
         },
         (payload) => {
           console.log('Review update:', payload)
-          if (payload.type === 'INSERT') {
-            setReviews(prev => [payload.new, ...prev])
-          } else if (payload.type === 'DELETE') {
-            setReviews(prev => prev.filter(review => review.id !== payload.old?.id))
-          }
+          setReviewUpdates(prev => [...prev, payload])
         }
       )
       .subscribe((status) => {
@@ -283,38 +234,21 @@ export function useRealtimeReviews(productId: string) {
     return () => {
       supabase.removeChannel(channel)
     }
-    */
   }, [productId])
 
-  return { reviews, isConnected }
+  return { reviewUpdates, isConnected }
 }
 
-// Real-time order status updates
-export function useRealtimeOrderStatus(orderId: string) {
-  const [orderStatus, setOrderStatus] = useState<string>('')
+// Real-time order status
+export function useRealtimeOrderStatus(orderId?: string) {
+  const [orderUpdates, setOrderUpdates] = useState<any[]>([])
   const [isConnected, setIsConnected] = useState(false)
 
   useEffect(() => {
-    // Get initial order status
-    const getOrderStatus = async () => {
-      const { data: order } = await supabase
-        .from('orders')
-        .select('status')
-        .eq('id', orderId)
-        .single()
+    if (!orderId) return
 
-      if (order) {
-        setOrderStatus(order.status)
-      }
-    }
-
-    getOrderStatus()
-
-    // Temporarily disable real-time subscription
-    // TODO: Re-enable when Supabase types are fixed
-    /*
     const channel = supabase
-      .channel(`order_${orderId}`)
+      .channel('order_status_updates')
       .on(
         'postgres_changes',
         {
@@ -325,9 +259,7 @@ export function useRealtimeOrderStatus(orderId: string) {
         },
         (payload) => {
           console.log('Order status update:', payload)
-          if (payload.new?.status) {
-            setOrderStatus(payload.new.status)
-          }
+          setOrderUpdates(prev => [...prev, payload])
         }
       )
       .subscribe((status) => {
@@ -337,23 +269,22 @@ export function useRealtimeOrderStatus(orderId: string) {
     return () => {
       supabase.removeChannel(channel)
     }
-    */
   }, [orderId])
 
-  return { orderStatus, isConnected }
+  return { orderUpdates, isConnected }
 }
 
 // Real-time wishlist updates
 export function useRealtimeWishlist() {
   const { data: session } = useSession()
-  const [wishlistItems, setWishlistItems] = useState<any[]>([])
+  
+  const [wishlistUpdates, setWishlistUpdates] = useState<any[]>([])
   const [isConnected, setIsConnected] = useState(false)
 
   useEffect(() => {
     if (!session?.user?.email) return
 
-    // Get initial wishlist
-    const getWishlist = async () => {
+    const getUserWishlist = async () => {
       const { data: user } = await supabase
         .from('users')
         .select('id')
@@ -362,70 +293,67 @@ export function useRealtimeWishlist() {
 
       if (!user) return
 
-      const { data: wishlistData } = await supabase
-        .from('wishlist_items')
-        .select('*')
-        .eq('user_id', user.id)
-
-      setWishlistItems(wishlistData || [])
-    }
-
-    getWishlist()
-
-    // Temporarily disable real-time subscription
-    // TODO: Re-enable when Supabase types are fixed
-    /*
-    const channel = supabase
-      .channel('wishlist_updates')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'wishlist_items',
-          filter: `user_id=eq.${user.id}`
-        },
-        (payload) => {
-          console.log('Wishlist update:', payload)
-          if (payload.type === 'INSERT') {
-            setWishlistItems(prev => [...prev, payload.new])
-          } else if (payload.type === 'DELETE') {
-            setWishlistItems(prev => prev.filter(item => item.id !== payload.old?.id))
+      const channel = supabase
+        .channel('wishlist_updates')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'wishlist_items',
+            filter: `user_id=eq.${user.id}`
+          },
+          (payload) => {
+            console.log('Wishlist update:', payload)
+            setWishlistUpdates(prev => [...prev, payload])
           }
-        }
-      )
-      .subscribe((status) => {
-        setIsConnected(status === 'SUBSCRIBED')
-      })
+        )
+        .subscribe((status) => {
+          setIsConnected(status === 'SUBSCRIBED')
+        })
 
-    return () => {
-      supabase.removeChannel(channel)
+      return () => {
+        supabase.removeChannel(channel)
+      }
     }
-    */
+
+    getUserWishlist()
   }, [session?.user?.email])
 
-  return { wishlistItems, isConnected }
+  return { wishlistUpdates, isConnected }
 }
 
-// Broadcast listener for cross-tab communication
-export function useBroadcastListener(channelName: string, callback: (data: any) => void) {
+// Utility function to broadcast updates to other clients
+export async function broadcastUpdate(
+  channel: string,
+  event: string,
+  payload: any
+) {
+  try {
+    await supabase.channel(channel).send({
+      type: 'broadcast',
+      event,
+      payload
+    })
+  } catch (error) {
+    console.error('Failed to broadcast update:', error)
+  }
+}
+
+// Utility function to listen for broadcast updates
+export function useBroadcastListener(
+  channel: string,
+  event: string,
+  callback: (payload: any) => void
+) {
   useEffect(() => {
-    const channel = new BroadcastChannel(channelName)
-    
-    channel.onmessage = (event) => {
-      callback(event.data)
-    }
+    const subscription = supabase
+      .channel(channel)
+      .on('broadcast', { event }, callback)
+      .subscribe()
 
     return () => {
-      channel.close()
+      supabase.removeChannel(subscription)
     }
-  }, [channelName, callback])
-
-  const broadcast = useCallback((data: any) => {
-    const channel = new BroadcastChannel(channelName)
-    channel.postMessage(data)
-    channel.close()
-  }, [channelName])
-
-  return { broadcast }
+  }, [channel, event, callback])
 }

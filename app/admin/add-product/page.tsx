@@ -62,26 +62,44 @@ export default function AddProductPage() {
   }
 
   const handleArrayChange = (field: string, index: number, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: (prev[field as keyof typeof prev] as string[]).map((item: any, i: number) => 
-        i === index ? value : item
-      )
-    }))
+    setFormData(prev => {
+      const currentValue = prev[field as keyof typeof prev]
+      if (Array.isArray(currentValue)) {
+        return {
+          ...prev,
+          [field]: currentValue.map((item: any, i: number) => 
+            i === index ? value : item
+          )
+        }
+      }
+      return prev
+    })
   }
 
   const addArrayItem = (field: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: [...(prev[field as keyof typeof prev] as string[]), '']
-    }))
+    setFormData(prev => {
+      const currentValue = prev[field as keyof typeof prev]
+      if (Array.isArray(currentValue)) {
+        return {
+          ...prev,
+          [field]: [...currentValue, '']
+        }
+      }
+      return prev
+    })
   }
 
   const removeArrayItem = (field: string, index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: (prev[field as keyof typeof prev] as string[]).filter((_: any, i: number) => i !== index)
-    }))
+    setFormData(prev => {
+      const currentValue = prev[field as keyof typeof prev]
+      if (Array.isArray(currentValue)) {
+        return {
+          ...prev,
+          [field]: currentValue.filter((_: any, i: number) => i !== index)
+        }
+      }
+      return prev
+    })
   }
 
   const generateSlug = (name: string) => {

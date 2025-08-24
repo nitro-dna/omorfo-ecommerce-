@@ -10,13 +10,14 @@ export async function GET(
     const includeReviews = searchParams.get('includeReviews') !== 'false'
     const includeRelated = searchParams.get('includeRelated') === 'true'
     
+    let selectQuery = `*, category:categories(*)`
+    if (includeReviews) {
+      selectQuery += ',reviews(user_id, rating, comment, created_at)'
+    }
+    
     let query = supabase
       .from('products')
-      .select(`
-        *,
-        category:categories(*)
-        ${includeReviews ? ',reviews(user_id, rating, comment, created_at)' : ''}
-      `)
+      .select(selectQuery)
       .eq('slug', params.slug)
       .single()
 
@@ -30,8 +31,8 @@ export async function GET(
     }
 
     // Get related products from same category
-    let relatedProducts = []
-    if (includeRelated) {
+    let relatedProducts: any[] = []
+    if (includeRelated && product && typeof product === 'object' && 'category_id' in product) {
       const { data: related } = await supabase
         .from('products')
         .select(`

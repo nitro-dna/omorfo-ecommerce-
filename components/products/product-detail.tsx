@@ -75,7 +75,7 @@ export function ProductDetail({ product: rawProduct }: ProductDetailProps) {
           {/* Thumbnail Images */}
           {product.images.length > 1 && (
             <div className="grid grid-cols-4 gap-2">
-              {product.images.map((image: string, index: number) => (
+              {product.images.map((image: any, index: number) => (
                 <button
                   key={index}
                   onClick={() => setSelectedImage(index)}
@@ -156,7 +156,7 @@ export function ProductDetail({ product: rawProduct }: ProductDetailProps) {
           <div>
             <h3 className="text-sm font-medium text-gray-900 mb-3">Size</h3>
             <div className="grid grid-cols-2 gap-2">
-              {product.sizes.map((size: string) => (
+              {product.sizes.map((size: any) => (
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
@@ -176,7 +176,7 @@ export function ProductDetail({ product: rawProduct }: ProductDetailProps) {
           <div>
             <h3 className="text-sm font-medium text-gray-900 mb-3">Frame</h3>
             <div className="grid grid-cols-2 gap-2">
-              {product.frames.map((frame: string) => (
+              {product.frames.map((frame: any) => (
                 <button
                   key={frame}
                   onClick={() => setSelectedFrame(frame)}
@@ -266,7 +266,7 @@ export function ProductDetail({ product: rawProduct }: ProductDetailProps) {
             <div className="border-t border-gray-200 pt-6">
               <h3 className="text-sm font-medium text-gray-900 mb-3">Tags</h3>
               <div className="flex flex-wrap gap-2">
-                {product.tags.map((tag: string) => (
+                {product.tags.map((tag: any) => (
                   <span
                     key={tag}
                     className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full"

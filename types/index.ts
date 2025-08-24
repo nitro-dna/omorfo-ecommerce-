@@ -114,7 +114,6 @@ export interface CartItem {
   product?: Product;
   options?: any;
   user?: User;
-  product?: Product;
 }
 
 export interface WishlistItem {

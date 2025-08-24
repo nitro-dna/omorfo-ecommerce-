@@ -129,7 +129,6 @@ export async function POST(request: NextRequest) {
         success: false,
         error: 'Failed to send test email',
         details: error instanceof Error ? error.message : 'Unknown error',
-        email: 'unknown',
         resendApiKeyAvailable: !!process.env.RESEND_API_KEY,
         timestamp: new Date().toISOString()
       },

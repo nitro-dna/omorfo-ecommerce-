@@ -8,7 +8,6 @@ yarn-error.log*
 .next/
 out/
 build/
-dist/
 
 # Environment variables
 .env
@@ -105,19 +104,3 @@ jspm_packages/
 # Temporary folders
 tmp/
 temp/
-
-# Local development
-*.local
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
-
-# Uploads
-uploads/
-public/uploads/
-
-# Test files
-test-results/
-playwright-report/

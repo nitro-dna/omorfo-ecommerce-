@@ -51,6 +51,90 @@ export default function AdminPage() {
                   <p className="text-red-700">View sales and performance data</p>
                 </div>
               </Link>
+              
+              <Link href="/admin/email-testing">
+                <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-6 hover:bg-indigo-100 transition-colors">
+                  <h2 className="text-xl font-semibold text-indigo-900 mb-2">Email Testing</h2>
+                  <p className="text-indigo-700">Test and verify email functionality</p>
+                </div>
+              </Link>
+              
+              <Link href="/admin/email-logs">
+                <div className="bg-teal-50 border border-teal-200 rounded-lg p-6 hover:bg-teal-100 transition-colors">
+                  <h2 className="text-xl font-semibold text-teal-900 mb-2">Email Logs</h2>
+                  <p className="text-teal-700">Track and manage all sent emails</p>
+                </div>
+              </Link>
+              
+              <Link href="/test-real-order">
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 hover:bg-amber-100 transition-colors">
+                  <h2 className="text-xl font-semibold text-amber-900 mb-2">Real Order Test</h2>
+                  <p className="text-amber-700">Test complete order process with emails</p>
+                </div>
+              </Link>
+              
+              <Link href="/admin/stripe-testing">
+                <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-6 hover:bg-indigo-100 transition-colors">
+                  <h2 className="text-xl font-semibold text-indigo-900 mb-2">Stripe Testing</h2>
+                  <p className="text-indigo-700">Test Stripe payment integration</p>
+                </div>
+              </Link>
+              
+              <Link href="/test-live-payment">
+                <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-6 hover:bg-emerald-100 transition-colors">
+                  <h2 className="text-xl font-semibold text-emerald-900 mb-2">Live Payment Test</h2>
+                  <p className="text-emerald-700">Test real Stripe payments</p>
+                </div>
+              </Link>
+              
+              <Link href="/admin/analytics-dashboard">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 hover:bg-blue-100 transition-colors">
+                  <h2 className="text-xl font-semibold text-blue-900 mb-2">Analytics Dashboard</h2>
+                  <p className="text-blue-700">Comprehensive business insights</p>
+                </div>
+              </Link>
+              
+              <Link href="/admin/advanced-analytics">
+                <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-6 hover:bg-indigo-100 transition-colors">
+                  <h2 className="text-xl font-semibold text-indigo-900 mb-2">Advanced Analytics</h2>
+                  <p className="text-indigo-700">Deep insights with interactive charts</p>
+                </div>
+              </Link>
+              
+              <Link href="/admin/customer-management">
+                <div className="bg-purple-50 border border-purple-200 rounded-lg p-6 hover:bg-purple-100 transition-colors">
+                  <h2 className="text-xl font-semibold text-purple-900 mb-2">Customer Management</h2>
+                  <p className="text-purple-700">Manage and analyze customers</p>
+                </div>
+              </Link>
+              
+              <Link href="/admin/order-tracking">
+                <div className="bg-teal-50 border border-teal-200 rounded-lg p-6 hover:bg-teal-100 transition-colors">
+                  <h2 className="text-xl font-semibold text-teal-900 mb-2">Order Tracking</h2>
+                  <p className="text-teal-700">Track and manage orders</p>
+                </div>
+              </Link>
+              
+              <Link href="/admin/bulk-operations">
+                <div className="bg-cyan-50 border border-cyan-200 rounded-lg p-6 hover:bg-cyan-100 transition-colors">
+                  <h2 className="text-xl font-semibold text-cyan-900 mb-2">Bulk Operations</h2>
+                  <p className="text-cyan-700">Manage multiple items at once</p>
+                </div>
+              </Link>
+              
+              <Link href="/admin/email-templates">
+                <div className="bg-pink-50 border border-pink-200 rounded-lg p-6 hover:bg-pink-100 transition-colors">
+                  <h2 className="text-xl font-semibold text-pink-900 mb-2">Email Templates</h2>
+                  <p className="text-pink-700">Create and manage email templates</p>
+                </div>
+              </Link>
+              
+              <Link href="/admin/notification-center">
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 hover:bg-amber-100 transition-colors">
+                  <h2 className="text-xl font-semibold text-amber-900 mb-2">Notification Center</h2>
+                  <p className="text-amber-700">Manage system notifications</p>
+                </div>
+              </Link>
             </div>
             
             <div className="mt-8 pt-8 border-t border-gray-200">

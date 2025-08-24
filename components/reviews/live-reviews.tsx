@@ -60,8 +60,8 @@ export function LiveReviews({ product, showNewReviewAlert = true, className = ''
       
       if (latestUpdate.eventType === 'INSERT') {
         const newReview = latestUpdate.new as Review
-        setReviews((prev: any[]) => [newReview, ...prev])
-        setNewReviews((prev: any[]) => [newReview, ...prev.slice(0, 4)]) // Keep last 5 new reviews
+        setReviews((prev: any) => [newReview, ...prev])
+        setNewReviews((prev: any) => [newReview, ...prev.slice(0, 4)]) // Keep last 5 new reviews
         setTotalReviews((prev: number) => prev + 1)
         
         // Update average rating
@@ -77,7 +77,7 @@ export function LiveReviews({ product, showNewReviewAlert = true, className = ''
         }
       } else if (latestUpdate.eventType === 'DELETE') {
         const deletedReview = latestUpdate.old as Review
-        setReviews((prev: any[]) => prev.filter(review => review.id !== deletedReview.id))
+        setReviews(prev => prev.filter(review => review.id !== deletedReview.id))
         setTotalReviews((prev: number) => Math.max(0, prev - 1))
       }
     }

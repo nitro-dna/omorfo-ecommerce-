@@ -38,7 +38,7 @@ export function StockIndicator({ product, showAlert = true, className = '' }: St
               icon: '⚠️'
             })
           } else if (newStock <= 5 && newStock > 0 && oldStock > 5) {
-            toast.error(`Only ${newStock} items left in stock!`, {
+            toast(`Only ${newStock} items left in stock!`, {
               duration: 4000,
               icon: '🔥'
             })

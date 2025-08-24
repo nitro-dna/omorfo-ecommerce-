@@ -30,8 +30,8 @@ type CartAction =
   | { type: 'UPDATE_ITEM'; payload: { id: string; quantity: number } }
   | { type: 'REMOVE_ITEM'; payload: string }
   | { type: 'CLEAR_CART' }
-  | { type: 'SYNC_FROM_DATABASE'; payload: CartItem[] }
-  | { type: 'MERGE_CARTS'; payload: CartItem[] }
+  | { type: 'SYNC_FROM_DATABASE'; payload: any[] }
+  | { type: 'MERGE_CARTS'; payload: any[] }
 
 const initialState: CartState = {
   items: [],
@@ -115,7 +115,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     case 'SYNC_FROM_DATABASE':
       const dbItems = action.payload.map(item => ({
         id: item.id,
-        productId: (item as any).product_id || item.productId,
+        productId: item.productId || item.product_id,
         name: item.product?.name || 'Unknown Product',
         price: item.price,
         image: item.product?.images?.[0] || '',
@@ -136,7 +136,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
       
       action.payload.forEach(dbItem => {
         const existingItem = mergedItems.find(item => 
-          item.productId === ((dbItem as any).product_id || dbItem.productId) && 
+          item.productId === (dbItem.productId || dbItem.product_id) && 
           item.size === dbItem.size && 
           item.frame === dbItem.frame
         )
@@ -149,7 +149,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
           // Add new item from database
           mergedItems.push({
             id: dbItem.id,
-            productId: (dbItem as any).product_id || dbItem.productId,
+            productId: dbItem.productId || dbItem.product_id,
             name: dbItem.product?.name || 'Unknown Product',
             price: dbItem.price,
             image: dbItem.product?.images?.[0] || '',
@@ -175,10 +175,6 @@ function cartReducer(state: CartState, action: CartAction): CartState {
 
 interface CartContextType {
   state: CartState
-  items: CartItem[]
-  itemCount: number
-  total: number
-  isLoading: boolean
   addItem: (item: CartItem) => Promise<void>
   updateItem: (id: string, quantity: number) => Promise<void>
   removeItem: (id: string) => Promise<void>
@@ -467,10 +463,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     <CartContext.Provider
       value={{
         state,
-        items: state.items,
-        itemCount: state.itemCount,
-        total: state.total,
-        isLoading: state.isLoading,
         addItem,
         updateItem,
         removeItem,

@@ -57,6 +57,13 @@ export const lazyLoad = {
     })
   },
 
+  // Lazy load component
+  loadComponent: <T extends React.ComponentType<any>>(
+    importFunc: () => Promise<{ default: T }>
+  ) => {
+    return React.lazy(importFunc)
+  },
+
   // Preload critical resources
   preloadResource: (href: string, as: string = 'fetch') => {
     const link = document.createElement('link')
@@ -97,11 +104,7 @@ export const bundleOptimizer = {
 
   // Component-based code splitting
   componentSplit: {
-    // Placeholder for future UI components
-    // modal: () => import('@/components/ui/modal'),
-    // tooltip: () => import('@/components/ui/tooltip'),
-    // dropdown: () => import('@/components/ui/dropdown'),
-    // chart: () => import('@/components/ui/chart'),
+    // Add component imports here when needed
   }
 }
 
@@ -303,7 +306,7 @@ export const cache = CacheManager.getInstance()
 // Performance optimization hooks
 export const usePerformance = () => {
   const [metrics, setMetrics] = useState<{
-    memoryUsage: { used: number; total: number; limit: number } | null;
+    memoryUsage: any;
     loadTime: number;
     renderTime: number;
   }>({

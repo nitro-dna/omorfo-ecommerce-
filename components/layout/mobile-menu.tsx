@@ -31,8 +31,7 @@ interface MobileMenuProps {
 
 export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   const { data: session } = useSession()
-  const cart = useCart()
-  const itemCount = cart.items?.length || 0
+  const { state } = useCart()
 
   return (
     <Transition.Root show={isOpen} as={Fragment}>
@@ -177,9 +176,9 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                         >
                           <ShoppingCart className="w-5 h-5 mr-2" />
                           Cart
-                          {itemCount > 0 && (
+                          {state.itemCount > 0 && (
                             <span className="ml-2 bg-accent-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                              {itemCount}
+                              {state.itemCount}
                             </span>
                           )}
                         </Link>

@@ -161,10 +161,10 @@ export default function TestNewsletterPage() {
                       },
                       body: JSON.stringify({ email: testEmail }),
                     })
-                      .then(res => res.json())
-                      .then(data => {
+                      .then(async res => {
+                        const data = await res.json()
                         console.log('Unsubscribe API Response:', data)
-                        if (data.success) {
+                        if (res.ok) {
                           toast.success(`Successfully unsubscribed: ${testEmail}`)
                         } else {
                           toast.error(data.error || 'Failed to unsubscribe')

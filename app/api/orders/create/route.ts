@@ -27,8 +27,8 @@ export async function POST(request: NextRequest) {
     // Create order object
     const order = {
       id: orderId,
-      userId: (session?.user as any)?.id || null,
-      guestEmail: !(session?.user as any)?.id ? orderData.email : null,
+      userId: session?.user?.id || null,
+      guestEmail: !session?.user?.id ? orderData.email : null,
       status: 'CONFIRMED',
       total: parseFloat(total),
       subtotal: parseFloat(subtotal),
