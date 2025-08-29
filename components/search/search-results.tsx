@@ -415,40 +415,59 @@ export function SearchResults({ searchParams }: SearchResultsProps) {
               ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' 
               : 'grid-cols-1'
           }`}>
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={{
-                  id: product.id,
-                  name: product.name,
-                  slug: product.slug,
-                  description: product.description,
-                  price: product.price,
-                  salePrice: product.salePrice,
-                  images: product.images,
-                  categoryId: product.category || '',
-                  category: { 
-                    id: product.category || '',
-                    name: product.category,
-                    slug: product.category?.toLowerCase().replace(/\s+/g, '-') || '',
-                    createdAt: new Date(),
-                    updatedAt: new Date()
-                  },
-                  rating: product.rating,
-                  reviewCount: product.reviewCount,
-                  stockCount: product.stockCount,
-                  inStock: product.inStock,
-                  tags: product.tags,
-                  materials: [],
-                  featured: false,
-                  sizes: [],
-                  frames: [],
-                  dimensions: product.dimensions,
-                  createdAt: new Date(product.createdAt),
-                  updatedAt: new Date(product.updatedAt)
-                }}
-              />
-            ))}
+            {products.map((product) => {
+              const categoryIsObject = typeof (product as any).category === 'object' && (product as any).category !== null
+              const categoryId = categoryIsObject
+                ? ((product as any).category.id || (product as any).category_id || '')
+                : ((product as any).category || (product as any).category_id || '')
+              const categoryName = categoryIsObject
+                ? ((product as any).category.name || '')
+                : ((product as any).category || '')
+              const categorySlug = categoryName ? categoryName.toLowerCase().replace(/\s+/g, '-') : ''
+
+              const createdAt = (product as any).createdAt || (product as any).created_at
+              const updatedAt = (product as any).updatedAt || (product as any).updated_at
+
+              const salePrice = (product as any).salePrice ?? (product as any).sale_price
+              const inStock = (product as any).inStock ?? (product as any).in_stock
+              const reviewCount = (product as any).reviewCount ?? (product as any).review_count
+              const stockCount = (product as any).stockCount ?? (product as any).stock_count
+
+              return (
+                <ProductCard
+                  key={product.id}
+                  product={{
+                    id: product.id,
+                    name: product.name,
+                    slug: product.slug,
+                    description: product.description,
+                    price: product.price,
+                    salePrice,
+                    images: product.images,
+                    categoryId,
+                    category: {
+                      id: categoryId,
+                      name: categoryName,
+                      slug: categorySlug,
+                      createdAt: new Date(),
+                      updatedAt: new Date(),
+                    },
+                    rating: product.rating,
+                    reviewCount,
+                    stockCount,
+                    inStock,
+                    tags: product.tags,
+                    materials: [],
+                    featured: false,
+                    sizes: [],
+                    frames: [],
+                    dimensions: (product as any).dimensions,
+                    createdAt: createdAt ? new Date(createdAt) : new Date(),
+                    updatedAt: updatedAt ? new Date(updatedAt) : new Date(),
+                  }}
+                />
+              )
+            })}
           </div>
 
           {/* Pagination */}
